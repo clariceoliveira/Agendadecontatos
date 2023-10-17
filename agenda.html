@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Agenda de Contatos</title>
+</head>
+<body>
+    <h1>Agenda de Contatos</h1>
+
+    <h2>Listagem de Contatos</h2>
+    <div id="contatos"></div>
+
+    <h2>Incluir Contato</h2>
+    <form id="inclusaoForm">
+        Nome: <input type="text" id="nome"><br>
+        Telefone: <input type="text" id="telefone"><br>
+        E-mail: <input type="text" id="email"><br>
+        <button type="button" onclick="incluirContato()">Incluir</button>
+    </form>
+
+    <h2>Alterar Contato</h2>
+    <form id="alteracaoForm">
+        Código: <input type="number" id="codigo"><br>
+        Nome: <input type="text" id="novoNome"><br>
+        Telefone: <input type="text" id="novoTelefone"><br>
+        E-mail: <input type="text" id="novoEmail"><br>
+        <button type="button" onclick="alterarContato()">Alterar</button>
+    </form>
+
+    <h2>Excluir Contato</h2>
+    <form id="exclusaoForm">
+        Código: <input type="number" id="excluirCodigo"><br>
+        <button type="button" onclick="excluirContato()">Excluir</button>
+    </form>
+
+    <script>
+        function incluirContato() {
+            var nome = document.getElementById("nome").value;
+            var telefone = document.getElementById("telefone").value;
+            var email = document.getElementById("email").value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "inclusao.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    listagemContatos();
+                }
+            };
+            xhr.send("nome=" + nome + "&telefone=" + telefone + "&email=" + email);
+        }
+
+        function alterarContato() {
+            var codigo = document.getElementById("codigo").value;
+            var novoNome = document.getElementById("novoNome").value;
+            var novoTelefone = document.getElementById("novoTelefone").value;
+            var novoEmail = document.getElementById("novoEmail").value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "alteracao.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    listagemContatos();
+                }
+            };
+            xhr.send("codigo=" + codigo + "&nome=" + novoNome + "&telefone=" + novoTelefone + "&email=" + novoEmail);
+        }
+
+        function excluirContato() {
+            var codigo = document.getElementById("excluirCodigo").value;
+
+            var xhr = new XMLHttpRequest();
+            xhr.open("POST", "exclusao.php", true);
+            xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    listagemContatos();
+                }
+            };
+            xhr.send("codigo=" + codigo);
+        }
+
+        function listagemContatos() {
+            var xhr = new XMLHttpRequest();
+            xhr.open("GET", "listagem.php", true);
+            xhr.onreadystatechange = function () {
+                if (xhr.readyState === 4 && xhr.status === 200) {
+                    document.getElementById("contatos").innerHTML = xhr.responseText;
+                }
+            };
+            xhr.send();
+        }
+
+        listagemContatos();
+    </script>
+</body>
+</html>
